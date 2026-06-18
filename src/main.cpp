@@ -330,10 +330,66 @@ GameScreen gameplayScreen(int selectedCharacter)
     int screenHeight = GetScreenHeight();
 
     float playerSize = 40.0f;
-    float playerSpeed = 250.0f;
-    float deltaTime = GetFrameTime(); //used so the player moves at a consistent time 
 
-    //declaring the movement keys wasd
+    // Placeholder player stats
+    int playerMaxHealth = 100;
+    int playerHealth = 100;
+
+    int playerMaxMana = 50;
+    int playerMana = 50;
+
+    int playerAttack = 10;
+    float playerSpeed = 250.0f;
+
+    // Set stats based on selected character
+    if (selectedCharacter == 0)
+    {
+        // Warrior
+        playerMaxHealth = 120;
+        playerHealth = 120;
+
+        playerMaxMana = 30;
+        playerMana = 30;
+
+        playerAttack = 12;
+        playerSpeed = 220.0f;
+    }
+    else if (selectedCharacter == 1)
+    {
+        // Mage
+        playerMaxHealth = 80;
+        playerHealth = 80;
+
+        playerMaxMana = 120;
+        playerMana = 120;
+
+        playerAttack = 18;
+        playerSpeed = 200.0f;
+    }
+    else if (selectedCharacter == 2)
+    {
+        // Rogue
+        playerMaxHealth = 90;
+        playerHealth = 90;
+
+        playerMaxMana = 60;
+        playerMana = 60;
+
+        playerAttack = 10;
+        playerSpeed = 300.0f;
+    }
+
+    float deltaTime = GetFrameTime(); // used so the player moves at a consistent time 
+
+    // Test room
+    Rectangle testRoom = {
+        100.0f,
+        180.0f,
+        (float)screenWidth - 200.0f,
+        (float)screenHeight - 260.0f
+    };
+
+    // declaring the movement keys wasd
     if (IsKeyDown(KEY_W))
     {
         playerPosition.y -= playerSpeed * deltaTime;
@@ -354,29 +410,33 @@ GameScreen gameplayScreen(int selectedCharacter)
         playerPosition.x += playerSpeed * deltaTime;
     }
 
-    // Keep player inside the window
-    if (playerPosition.x < 0)
+    // Keep player inside the test room
+    if (playerPosition.x < testRoom.x)
     {
-        playerPosition.x = 0;
+        playerPosition.x = testRoom.x;
     }
 
-    if (playerPosition.y < 0)
+    if (playerPosition.y < testRoom.y)
     {
-        playerPosition.y = 0;
+        playerPosition.y = testRoom.y;
     }
 
-    if (playerPosition.x + playerSize > screenWidth)
+    if (playerPosition.x + playerSize > testRoom.x + testRoom.width)
     {
-        playerPosition.x = screenWidth - playerSize;
+        playerPosition.x = testRoom.x + testRoom.width - playerSize;
     }
 
-    if (playerPosition.y + playerSize > screenHeight)
+    if (playerPosition.y + playerSize > testRoom.y + testRoom.height)
     {
-        playerPosition.y = screenHeight - playerSize;
+        playerPosition.y = testRoom.y + testRoom.height - playerSize;
     }
 
     DrawText("Gameplay Screen", 20, 20, 30, WHITE);
 
+    // Draw test room
+    DrawRectangleLinesEx(testRoom, 4.0f, WHITE);
+
+    // Draw player
     if (selectedCharacter == 0)
     {
         // Warrior = square
@@ -418,6 +478,12 @@ GameScreen gameplayScreen(int selectedCharacter)
 
         DrawTriangle(point1, point2, point3, WHITE);
     }
+
+    // Temporary debug stats display
+    DrawText(TextFormat("HP: %d / %d", playerHealth, playerMaxHealth), 20, 60, 20, WHITE);
+    DrawText(TextFormat("MP: %d / %d", playerMana, playerMaxMana), 20, 85, 20, WHITE);
+    DrawText(TextFormat("Attack: %d", playerAttack), 20, 110, 20, WHITE);
+    DrawText(TextFormat("Speed: %.0f", playerSpeed), 20, 135, 20, WHITE);
 
     return GAMEPLAY;
 }
